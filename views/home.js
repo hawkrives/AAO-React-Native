@@ -22,6 +22,7 @@ import { connect } from 'react-redux'
 import Icon from 'react-native-vector-icons/Entypo'
 import * as c from './components/colors'
 import sortBy from 'lodash/sortBy'
+import LinearGradient from 'react-native-linear-gradient'
 import type {TopLevelViewPropsType} from './types'
 
 const Dimensions = require('Dimensions')
@@ -37,6 +38,17 @@ const Touchable = ({children, onPress}: {onPress: () => any, children?: Element<
 }
 
 function HomeScreenButton({view, onPress}: {view: ViewType, onPress: () => any}) {
+  if (view.gradient) {
+    return <Touchable onPress={onPress}>
+      <LinearGradient start={[0, 0.35]} end={[1, .75]} colors={view.gradient} style={[styles.rectangle]}>
+        <Icon name={view.icon} size={32} style={styles.rectangleButtonIcon} />
+        <Text style={styles.rectangleButtonText}>
+          {view.title}
+        </Text>
+      </LinearGradient>
+    </Touchable>
+  }
+
   return (
     <Touchable onPress={onPress}>
       <View style={[styles.rectangle, {backgroundColor: view.tint}]}>
@@ -148,9 +160,11 @@ let styles = StyleSheet.create({
   // Text styling in buttons
   rectangleButtonIcon: {
     color: c.white,
+    backgroundColor: 'transparent',
   },
   rectangleButtonText: {
     color: c.white,
+    backgroundColor: 'transparent',
     marginTop: cellSidePadding / 2,
     fontFamily: Platform.OS === 'ios' ? 'System' : 'sans-serif-condensed',
     textAlign: 'center',
