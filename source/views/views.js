@@ -120,6 +120,14 @@ export const allViews: ViewType[] = [
     tint: c.periwinkle,
     gradient: c.lightBlueToBlueDark,
   },
+  {
+    type: 'view',
+    view: 'PrintReleaseView',
+    title: 'StoPrint',
+    icon: 'print',
+    tint: c.chartreuse,
+    gradient: c.tealToSeafoam,
+  },
   //   {
   //     type: 'view',
   //     view: 'HelpView',

@@ -31,6 +31,7 @@ import {StudentOrgsView, StudentOrgsDetailView} from './views/student-orgs'
 import {FaqView} from './views/faqs'
 // import {SnapshotsView} from './storybook'
 import HelpView from './views/help'
+import PrintReleaseView from './views/stoprint'
 
 const styles = StyleSheet.create({
   header: {
@@ -80,6 +81,7 @@ export const AppNavigator = StackNavigator(
     StudentOrgsView: {screen: StudentOrgsView},
     TransportationView: {screen: TransportationView},
     BusMapView: {screen: BusMapView},
+    PrintReleaseView: {screen: PrintReleaseView},
   },
   {
     navigationOptions: {
