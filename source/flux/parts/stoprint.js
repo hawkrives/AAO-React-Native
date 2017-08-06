@@ -13,23 +13,30 @@ export const LOGIN_FAILED = 'stoprint/LOGIN_FAILED'
 
 function _logIn(username, password) {
   const form = buildFormData({password: btoa(password)})
+  // console.log(form)
   const url = `https://papercut.stolaf.edu/rpc/api/rest/internal/webclient/users/${username}/log-in`
-  return fetch(url, {method: 'POST', body: form}).then(r => r.json())
+  // console.log(url)
+  let req = fetch(url, {method: 'POST', body: form})
+  // console.log(req)
+  return req.then(r => r.json())
 }
 
 async function logIn(username, password): Promise<boolean> {
   if (!username || !password) {
+    // console.log('missing username or password')
     return false
   }
   try {
-    const {success} = await _logIn(username, password)
-    if (!success) {
-      return false
+    const result = await _logIn(username, password)
+    // console.log('login result', result)
+    if (result.success) {
+      return true
     }
   } catch (err) {
+    // console.log('login threw an error')
     return false
   }
-  return true
+  return false
 }
 
 export function updatePrinters() {
@@ -39,7 +46,7 @@ export function updatePrinters() {
       return false
     }
 
-    const success = logIn(username, password)
+    const success = await logIn(username, password)
     if (!success) {
       return dispatch({
         type: LOGIN_FAILED,
@@ -62,25 +69,33 @@ export function updatePrintJobs() {
   return async (dispatch: any => any) => {
     const {username, password} = await loadLoginCredentials()
     if (!username || !password) {
+      // console.log('no credentials')
       return false
     }
+    // console.log('yes credentials')
 
-    const success = logIn(username, password)
+    const success = await logIn(username, password)
     if (!success) {
+      // console.log('not logged in')
       return dispatch({
         type: LOGIN_FAILED,
         error: true,
         payload: 'Login failed',
       })
     }
+    // console.log('yes logged in')
 
     const url = `https://papercut.stolaf.edu:9192/rpc/api/rest/internal/webclient/users/${username}/jobs/status`
     const {jobs} = await fetch(url).then(r => r.json())
+
+    // console.log('data', jobs)
 
     dispatch({
       type: UPDATE_PRINT_JOBS,
       payload: jobs,
     })
+
+    // console.log('done')
   }
 }
 
@@ -118,6 +133,7 @@ function jobs(state = initialJobsState, action) {
 
 const initialStoprintPageState = {}
 export function stoprint(state: Object = initialStoprintPageState, action: Object) {
+  console.log(action)
   return {
     printers: printers(state.printers, action),
     jobs: jobs(state.jobs, action),

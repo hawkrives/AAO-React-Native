@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import {SectionList, StyleSheet} from 'react-native'
+import {SectionList, StyleSheet, View, Text, Button} from 'react-native'
 import {connect} from 'react-redux'
 import {ListEmpty} from '../components/list'
 import {updatePrinters, updatePrintJobs} from '../../flux/parts/stoprint'
@@ -46,32 +46,53 @@ class PrintReleaseView extends React.PureComponent {
     jobs: Array<PrintJobType>,
     printers: Array<PrinterType>,
 
+    credentialsValid: boolean,
+
     updatePrinters: () => any,
-    updatePrintJobs: () => any,
+    updatePrintJobs: () => Promise<any>,
   }
 
   refresh = async () => {
     let start = Date.now()
-    this.setState({loading: true})
+    this.setState(() => ({loading: true}))
 
     await this.fetchData()
+    // console.log('data returned')
 
     // wait 0.5 seconds – if we let it go at normal speed, it feels broken.
     let elapsed = start - Date.now()
+    // console.log('waiting for', elapsed, 'ms')
     await delay(500 - elapsed)
+    // console.log('done waiting')
 
-    this.setState({loading: false})
+    this.setState(() => ({loading: false}))
   }
 
-  fetchData = async () => {
-    await this.props.updatePrintJobs()
+  fetchData = () => {
+    return this.props.updatePrintJobs()
   }
 
   keyExtractor = (item: PrintJobType) => {
     return item.printerName
   }
 
+  openSettings = () => {
+    this.props.navigation.navigate('SettingsView')
+  }
+
+  renderItem = ({item}: {item: PrintJobType}) =>
+          <ListRow>
+            <Title>{item.documentName}</Title>
+          </ListRow>
+
   render() {
+    if (!this.props.credentialsValid) {
+      return <View>
+        <Text>You are not logged in.</Text>
+        <Button onPress={this.openSettings} title="Open Settings" />
+      </View>
+    }
+
     const jobs = toPairs(groupBy(this.props.printers, j => j.printerName)).map(([title, data]) => ({title, data}))
 
     return (
@@ -83,11 +104,7 @@ class PrintReleaseView extends React.PureComponent {
         refreshing={this.state.loading}
         onRefresh={this.refresh}
         keyExtractor={this.keyExtractor}
-        renderItem={({item}: {item: PrintJobType}) =>
-          <ListRow>
-            <Title>{item.documentName}</Title>
-          </ListRow>
-        }
+        renderItem={this.renderItem}
       />
     )
   }
