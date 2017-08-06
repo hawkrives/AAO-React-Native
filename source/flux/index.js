@@ -14,6 +14,7 @@ import {homescreen} from './parts/homescreen'
 import {menus} from './parts/menus'
 import {settings} from './parts/settings'
 import {sis} from './parts/sis'
+import {stoprint} from './parts/stoprint'
 
 export function aao(state: Object = {}, action: Object) {
   return {
@@ -22,6 +23,7 @@ export function aao(state: Object = {}, action: Object) {
     menus: menus(state.menus, action),
     settings: settings(state.settings, action),
     sis: sis(state.sis, action),
+    stoprint: stoprint(state.stoprint, action),
   }
 }
 
