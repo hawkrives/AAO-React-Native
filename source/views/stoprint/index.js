@@ -42,6 +42,10 @@ class PrintReleaseView extends React.PureComponent {
     loading: false,
   }
 
+  componentWillMount = () => {
+    this.refresh()
+  }
+
   props: TopLevelViewPropsType & {
     jobs: Array<PrintJobType>,
     printers: Array<PrinterType>,
