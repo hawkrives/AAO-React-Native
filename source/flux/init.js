@@ -6,6 +6,7 @@
 import {NetInfo} from 'react-native'
 import {loadLoginCredentials} from '../lib/login'
 import {updateOnlineStatus} from './parts/app'
+import {getHoursFromStorage} from './parts/building-hours'
 import {loadHomescreenOrder} from './parts/homescreen'
 import {
   setLoginCredentials,
@@ -45,6 +46,7 @@ export async function init(store: {dispatch: any}) {
   store.dispatch(loadHomescreenOrder())
   store.dispatch(loadFeedbackStatus())
   loginCredentials(store)
+  store.dispatch(getHoursFromStorage())
 
   // wait for our first connection check to happen
   await netInfoIsConnected(store)
