@@ -55,3 +55,15 @@ export function setCredentialsValid(valid: boolean) {
 export function getCredentialsValid(): Promise<boolean> {
   return getItem(credentialsValidKey)
 }
+
+/// MARK: Building Hours
+
+import type {BuildingType} from '../views/building-hours/types'
+
+const hoursKey = 'building-hours:hours'
+export function setBuildingHours(hours: Array<BuildingType>) {
+  return setItem(hoursKey, hours)
+}
+export function getBuildingHours(): Promise<Array<BuildingType>> {
+  return getItem(hoursKey)
+}
